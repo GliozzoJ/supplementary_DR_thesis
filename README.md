@@ -17,13 +17,13 @@ HD<sub>1</sub> and HD<sub>2</sub> to set the dimension of the reduced space:
     AUC and AUCPR metrics, respectively. Tables `S1_comp_HD1_HD2_wtl_AUC.xlsx` and 
     `S2_comp_HD1_HD2_wtl_AUCPR.xlsx` reports the corresponding complete win-tie-loss tables.
     * Table `S3_comp_HD1_HD2_best_models.xlsx` collects the three DR+data-fusion pipelines 
-    that obtained the best AUC and/or the best AUCPR, used to create the previous image.
+    that obtained the best AUC and/or the best AUCPR.
 
 - **3_Comp_HD2_useID** contains the comparisons between DR pipelines that use of
 heuristic HD<sub>2</sub> and block-analysis to the set dimension of the reduced
 space of each data view:
     * Tables `S5_comp_HD2_useID_wtl_AUC.xlsx` and `S6_comp_HD2_useID_wtl_AUCPR.xlsx`
-    reports the complete win-tie-loss results for AUC and AUCPR, respectively. 
+    report the complete win-tie-loss results for AUC and AUCPR, respectively. 
     * Figures `Comp_HD2_ID1_AUC.png` and `Comp_HD2_ID1_AUCPR.png` depict extract
     of the previous two tables.
     * `S4_comp_HD2_useID_best_models.xlsx` collects the three DR+data-fusion pipelines 
