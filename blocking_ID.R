@@ -1,32 +1,62 @@
 library(doParallel)
 
+#' Blocking-id estimate
+#'
+#' @param mat matrix.. Matrix (samples x features) representing a single
+#' data view in a multi-modal/multi-omic dataset.
+#' @param ID_orig numeric. Unbiased original estimate of the intrinsic
+#' dimensionality for the considered view 
+#' (i.e. $\hat{d}_{twonn}\left(\mathbf{X}\right)$)
+#' @param factor numeric. Factor used for the computation of LO (see below).
+#' @param max_blocking_runs numeric. Maximum number of blocks of increasing 
+#' size to evaluate (def. 51).
+#' @param L0 numeric. Dimension of the smallest block. Defaults value is
+#' round(ID_orig * factor)-
+#' @param ID_estimator_fun string. Function to estimate ID, default is 
+#' "estimate_ID_twonn".
+#' @param ntry numeric. Number of resampling for each block (def. 31).
+#' @param args_ID 
+#' @param task character. Name of the considered predictive task (def. NULL).
+#' @param str_desc character. Descriptive name for the evaluated view 
+#' (def. 'data').
+#' @param ncores numeric. Save number of cores used, which is 
+#' ncores = min(ncores, detectCores()-1).
+#' @param no_els_to_monitor numeric. Minimum number of steps/blocks to evaluate.
+#' @param nDigits numeric. Number of digits to save id estimates results (def. 2).
+#' @param verbose numeric. If verbose=1, print informative messages (def. 0).
+#'
+#' @return Matrix containing the estimated IDs and their variance for each block. 
+#' @export
+#'
+#' @examples
 blocking_ID <- function(mat = NULL, ID_orig = NULL, # ID_orig MUST BE PROVIDED
                         factor = 3,
                         max_blocking_runs = 51,
                         L0 = round(ID_orig*factor), 
                         ID_estimator_fun = 'estimate_ID_twonn', 
                         ntry = 31, args_ID = NULL, 
-                        save_path = 'results', task = NULL, str_desc ='data ', 
-                        ncores = my_detectCores(),
+                        task = NULL, str_desc ='data', 
+                        ncores = 8,
                         no_els_to_monitor = 10, 
                         nDigits = 2, 
                         verbose = 0) {
-  # ntry = number of resampling for each block
+  
+  
   # N = number of blocks of increasing size I'm going to evaluate
-  # maxDim is the maximum blocking Dimension; that is, to speed up we will analize blocks with dimension <= L0, ..., maxDim
-  
-  
+  # maxDim is the maximum blocking Dimension; that is, to speed up we will 
+  # analyze blocks with dimension <= L0, ..., maxDim
   N = max_blocking_runs
   maxDim = min(ncol(mat), max(ID_orig*75, nrow(mat)*75), L0*N) # max block dim can't be greater than number of columns! 
   step_inc = L0
   
-  # if there are less than 2*no_els_to_monitor steps of increment, then recompute step_inc t have them 
+  # if there are less than 2*no_els_to_monitor steps of increment, then recompute step_inc to have them 
   if (round((maxDim-L0)/step_inc)<(no_els_to_monitor*2)) step_inc = max(round(ID_orig/2), floor((maxDim-L0)/(no_els_to_monitor*2))) # increment should at least be > ID_orig/2
-  cat('Blocking method on ', str_desc, 'in', task, '\n')
+  cat('Blocking method on', str_desc, 'in', task, '\n')
   cat('[L0, + N x step, maxDim] = [', L0, ', +', step_inc, ', ' , maxDim,']\n')
   
   
-  # for each block, id_est is a matrix containing, the mean od the id_estimates over that block, and the standard error (= sd/sqrt(ntry)) 
+  # for each block, id_est is a matrix containing, the mean of the id_estimates 
+  # over that block, and the standard error (= sd/sqrt(ntry)) 
   colnames_id_mat =   c('no_vars_in_block', 'ntry', 'block_id', 'var_block_id', 'sd_block_id',  
                         'mean_id', 'within_var', 'within_sd', 
                         'between_var', 'between_sd',
@@ -36,11 +66,12 @@ blocking_ID <- function(mat = NULL, ID_orig = NULL, # ID_orig MUST BE PROVIDED
   colnames(id_est) = colnames_id_mat
   
   
-  list_block_dims = unique(c(seq(L0, maxDim, by = step_inc), ncol(mat)))  # se sfora non aggiunge ncol(mat) 
+  list_block_dims = unique(c(seq(L0, maxDim, by = step_inc), ncol(mat)))
   stop_at = NA
   stop_at_Lj = NA
   start_count_last = FALSE
   stop_after = 10
+  
   # for each block
   for(Lj in list_block_dims) {
       #cat('Block ', i, '\n')
@@ -92,11 +123,12 @@ blocking_ID <- function(mat = NULL, ID_orig = NULL, # ID_orig MUST BE PROVIDED
       if (verbose ==1) cat(paste(colnames(id_est), collapse = '-'), '\n', paste(id_est[nrow(id_est), ], collapse='\t'), '\n')
     
       if ((nrow(id_est)>no_els_to_monitor) & (!start_count_last)){
-          # compute the std of the last 5 elements. When the std falls belo 0.1 stop computation and take the last block id as the last dataset id
+          # compute the std of the last 5 elements. When the std falls below 0.1 
+          # stop computation and take the last block id as the last dataset id
           last_els = id_est[(nrow(id_est)-no_els_to_monitor):nrow(id_est),'block_id']
           std_last_els = sd(last_els, na.rm = TRUE)
           lag = 3
-          sum_deriv = sum(diff(last_els, lag = lag)/lag) # per la derivate non faccio il modulo perchè mi va bene se scende e poi risale
+          sum_deriv = sum(diff(last_els, lag = lag)/lag)
           if (verbose == 1) cat('std_last_els = ', std_last_els, ' - sum_deriv = ' , sum_deriv, '\n')
           if ((std_last_els < 0.25) | (sum_deriv < 0.05)){ 
               if (verbose == 1)  cat('convergence reached after ', nrow(id_est), ' steps, that is when the block has dimension ', id_est[nrow(id_est), 'no_vars_in_block'], '\n')
@@ -115,12 +147,10 @@ blocking_ID <- function(mat = NULL, ID_orig = NULL, # ID_orig MUST BE PROVIDED
     }
     if (stop_after==0) break
     
-    
-    # 
-    
   } #end for each block
   
 
   return(id_est)
 }
+
 
