@@ -1,6 +1,7 @@
 ### Supplementary files - Chapter 3 "Feature selection guided by intrinsic dimensionality on omics data"
 
-This repository contains supplementary **tables** (.xlsx excel files) and **figures** (.png) relative to the third chapter "Feature selection guided by intrinsic dimensionality on omics data" of the PhD thesis "Patient Similarity Networks-based methods for multimodal data integration and clinical outcome prediction".
+This repository contains supplementary **tables** (.xlsx excel files), **figures** (.png) and 
+**code** (.R) relative to the third chapter "Feature selection guided by intrinsic dimensionality on omics data" of the PhD thesis "Patient Similarity Networks-based methods for multimodal data integration and clinical outcome prediction".
 Note that files directly cited in the thesis as "Supplementary" are named with the prefix
 **S#** (S followed by the file number, i.e. S11-S15) and we report also additional result tables for
 completeness. All the figures in this repository are explained in the appendices of the thesis.
@@ -70,3 +71,6 @@ stratified holdout validation:
 
 - **supp_blocking_images** contains the images for each cancer of the
 block-analysis performed using the two-nn estimator.
+
+- **blocking_ID.R** contains the code for the proposed ID-estimation by 
+block-analysis.
