@@ -1,8 +1,11 @@
 library(doParallel)
 
+source("estimate_ID_twoNN.R")
+source("compute_distance.R")
+
 #' Blocking-id estimate
 #'
-#' @param mat matrix.. Matrix (samples x features) representing a single
+#' @param mat matrix. Matrix (samples x features) representing a single
 #' data view in a multi-modal/multi-omic dataset.
 #' @param ID_orig numeric. Unbiased original estimate of the intrinsic
 #' dimensionality for the considered view 
@@ -10,12 +13,15 @@ library(doParallel)
 #' @param factor numeric. Factor used for the computation of LO (see below).
 #' @param max_blocking_runs numeric. Maximum number of blocks of increasing 
 #' size to evaluate (def. 51).
-#' @param L0 numeric. Dimension of the smallest block. Defaults value is
+#' @param L0 numeric. Dimension of the smallest block. Default value is
 #' round(ID_orig * factor)-
 #' @param ID_estimator_fun string. Function to estimate ID, default is 
 #' "estimate_ID_twonn".
 #' @param ntry numeric. Number of resampling for each block (def. 31).
-#' @param args_ID 
+#' @param args_ID list. List of parameters to use by 'estimate_ID_twonn'.
+#' In our experiments we used:
+#' args_ID= list(dist_fun_twoNN = 'canberra', perc_points = 0.9, maxit = 11, 
+#' ncores = min(ncores, detectCores()-1)).
 #' @param task character. Name of the considered predictive task (def. NULL).
 #' @param str_desc character. Descriptive name for the evaluated view 
 #' (def. 'data').
@@ -27,8 +33,6 @@ library(doParallel)
 #'
 #' @return Matrix containing the estimated IDs and their variance for each block. 
 #' @export
-#'
-#' @examples
 blocking_ID <- function(mat = NULL, ID_orig = NULL, # ID_orig MUST BE PROVIDED
                         factor = 3,
                         max_blocking_runs = 51,
