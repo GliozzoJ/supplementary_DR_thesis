@@ -1,3 +1,5 @@
+library(doParallel)
+
 #' Computation of an unbiased two-nn ID estimate
 #'
 #' @description Computation of an unbiased two-nn ID estimate by averaging all the 
