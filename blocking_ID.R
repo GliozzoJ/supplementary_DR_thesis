@@ -16,12 +16,12 @@ source("compute_distance.R")
 #' @param L0 numeric. Dimension of the smallest block. Default value is
 #' round(ID_orig * factor)-
 #' @param ID_estimator_fun string. Function to estimate ID, default is 
-#' "estimate_ID_twonn".
+#' "estimate_ID_twoNN".
 #' @param ntry numeric. Number of resampling for each block (def. 31).
 #' @param args_ID list. List of parameters to use by 'estimate_ID_twonn'.
 #' In our experiments we used:
 #' args_ID= list(dist_fun_twoNN = 'canberra', perc_points = 0.9, maxit = 11, 
-#' ncores = min(ncores, detectCores()-1)).
+#' ncores = min(8, detectCores()-1)).
 #' @param task character. Name of the considered predictive task (def. NULL).
 #' @param str_desc character. Descriptive name for the evaluated view 
 #' (def. 'data').
@@ -37,7 +37,7 @@ blocking_ID <- function(mat = NULL, ID_orig = NULL, # ID_orig MUST BE PROVIDED
                         factor = 3,
                         max_blocking_runs = 51,
                         L0 = round(ID_orig*factor), 
-                        ID_estimator_fun = 'estimate_ID_twonn', 
+                        ID_estimator_fun = 'estimate_ID_twoNN', 
                         ntry = 31, args_ID = NULL, 
                         task = NULL, str_desc ='data', 
                         ncores = 8,
