@@ -16,7 +16,7 @@
 #' dataset (def. 11).
 #' @param perc_points numeric. Percentage of data points to select in each
 #' undersampled version of the dataset (def. 0.9).
-#' @param verbose 
+#' @param verbose numeric. If verbose=1, print informative messages (def. 0).
 #' @param ncores numeric. Number of cores used, set as 
 #' ncores = min(ncores, detectCores()-1).
 #'
