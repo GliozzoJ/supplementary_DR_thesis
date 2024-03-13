@@ -114,4 +114,55 @@ args_ID = list(dist_fun_twoNN = 'canberra', perc_points = 0.9, maxit = 11,
 
 results <- blocking_ID(M, ID_orig = ID_orig, factor = factor, L0 = round(ID_orig*factor)) 
 ```
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+- Folder **code_DR+integration_pipelines** contains the code to run the proposed
+DR + data fusion pipelines. Instructions to run the code are available below.
+
+1. Install the following R packages:
+
+```
+# Packages installed from CRAN
+install.packages(c("reticulate", "Boruta", "caret", "cutpointr", "dplyr", 
+"doParallel", "entropy", "foreach", "genieclust", "ggplot2", "glmet", "kernlab", 
+"igraph", "intrinsicDimension", "loe", "missRanger", "mixKernel", "SNFtool", 
+"parallel", "PerfMeas", "plyr", "randomForest", "ranger", "Rdimtools", "readr", 
+"readxl", "ROCR", "R.utils", "rsvd", "StatMatch", "stringr", "tsne", "umap", 
+"tableone", "writexl", "intRinsic", "cytominer"))
+
+# Packages installed from Bioconductor:
+BiocManager::install("impute")
+BiocManager::install("limma")
+BiocManager::install("mixOmics")
+BiocManager::install("phyloseq")
+BiocManager::install("MOFA2")
+BiocManager::install("preprocessCore")
+```
+
+Additionally CRAN package [RMKL](https://cran.r-project.org/web/packages/RMKL/index.html) 
+is currently archived. You can install it from source after downloading the 
+file "RMKL_1.0.tar.gz":
+
+```
+install.packages("./RMKL_1.0.tar.gz", repos = NULL, type="source")
+```
+
+2. Download the datasets from this [link](https://drive.google.com/drive/folders/1zNxg-DBXKWsolag_4EAR26otTyUnPJTy?usp=sharing) and
+move the files into the folder "code_DR+integration_pipelines/data".
+
+3. In the file "main.R" you need to modify the settings to use required Python packages
+through "reticulate" interface. Minimal instructions are available at the beginning 
+of the file.
+
+4. Load the code:
+
+```
+source('main.R')
+```
+
+5. You can now use the function main_best_models() to run the analyses. Intermediate 
+results are automatically saved in the folder "code_DR+integration_pipelines/results".
+
+
 
