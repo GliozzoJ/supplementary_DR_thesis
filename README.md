@@ -72,51 +72,6 @@ stratified holdout validation:
 - **supp_blocking_images** contains the images for each cancer of the
 block-analysis performed using the two-nn estimator.
 
-- **blocking_ID.R**, **estimate_ID_twoNN.R** and **compute_distance.R** contain
-the R code that implements the proposed ID-estimation by block-analysis.
-An example to run the code on a toy matrix is provided below.
-
-0. Install the R package [doParallel](https://cran.r-project.org/web/packages/doParallel/index.html):
-
-```
-install.packages("doParallel")
-```
-
-1. Load the code:
-
-```
-source("blocking_ID.R")
-```
-
-2. Create a toy matrix (samples x features):
-
-```
-set.seed(123)
-
-M <- matrix(rnorm(3000), nrow=30)
-rownames(M) <- paste0("P", 1:nrow(M))
-colnames(M) <- paste0("F", 1:ncol(M))
-
-```
-
-3. Compute the unbiased estimate of the intrinsic dimensionality:
-
-```
-ID_orig <- estimate_ID_twoNN(mat_data = M)$id
-```
-
-4. Run the blocking-id analysis:
-
-```
-factor = 2
-args_ID = list(dist_fun_twoNN = 'canberra', perc_points = 0.9, maxit = 11, 
-               ncores = min(8, detectCores()-1))
-
-results <- blocking_ID(M, ID_orig = ID_orig, factor = factor, L0 = round(ID_orig*factor)) 
-```
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
-
 - Folder **code_DR+integration_pipelines** contains the code to run the proposed
 DR + data fusion pipelines. Instructions to run the code are available below.
 
@@ -164,5 +119,41 @@ source('main.R')
 5. You can now use the function main_best_models() to run the analyses. Intermediate 
 results are automatically saved in the folder "code_DR+integration_pipelines/results".
 
+Here there is also an examples on a toy matrix to run only 
+the ID-estimation by block-analysis:
+1. Load the code:
 
+```
+source("utilities.R")
+source("compute_distance.R")
+source("estimate_ID_twoNN.R")
+source("blocking_ID.R")
+```
+
+2. Create a toy matrix (samples x features):
+
+```
+set.seed(123)
+
+M <- matrix(rnorm(3000), nrow=30)
+rownames(M) <- paste0("P", 1:nrow(M))
+colnames(M) <- paste0("F", 1:ncol(M))
+
+```
+
+3. Compute the unbiased estimate of the intrinsic dimensionality:
+
+```
+ID_orig <- estimate_ID_twoNN(mat_data = M)$id
+```
+
+4. Run the blocking-id analysis:
+
+```
+factor = 2
+args_ID = list(dist_fun_twoNN= 'canberra', perc_points = 0.9, maxit = 11, 
+               ncores = min(8, detectCores()-1))
+
+results <- blocking_ID(M, ID_orig = ID_orig, factor = factor, L0 = round(ID_orig*factor)) 
+```
 
